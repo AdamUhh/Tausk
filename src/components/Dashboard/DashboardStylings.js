@@ -19,7 +19,7 @@ export const DateContainer = styled.p``;
 export const DashboardItemsContainer = styled.div`
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-    overflow-y: scroll;
+    overflow: hidden auto;
     margin: 20px auto;
     max-height: calc(100% - 165px);
 `;

@@ -7,8 +7,9 @@ const ChevronRightIcon = ({ width, height, rotate }) => {
             transform={rotate ? 'rotate(90)' : 'rotate(0)'}
             style={{transition: 'transform 0.3s'}}
             viewBox='0 0 24 24'
-            strokeWidth='1.5'
+            strokeWidth={rotate ? '2.5' : '1.5'}
             stroke='#ffffff'
+            // fill={rotate ? 'white' : 'none'}
             fill='none'
             strokeLinecap='round'
             strokeLinejoin='round'

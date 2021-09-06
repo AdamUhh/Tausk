@@ -62,11 +62,22 @@ pre {
 
 .skeleton {
   opacity: 0.7;
-  animation: skeletonLoading 1s linear infinite alternate;
   margin-bottom: 0.25rem;
+  /* background: linear-gradient(	  
+    to right,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.5) 50%,
+    rgba(255, 255, 255, 0) 80%
+    ),
+    hsl(200, 20%, 95%);
+    background-repeat: repeat-y;
+    background-size: 100px 500px;
+    background-position: 0 0;
+    animation: shine 2s infinite alternate;	 */
+    animation: skeletonLoading 1.5s linear infinite alternate;
 }
 
-.skeleton-folder, .skeleton-group, .skeleton-card, .skeleton-task, .skeleton-notes-nav, .skeleton-notes-nav-options, .skeleton-notes-card, .skeleton-notes-task {
+.skeleton-folder, .skeleton-group, .skeleton-card, .skeleton-task, .skeleton-notes-nav, .skeleton-notes-nav-options, .skeleton-notes-card, .skeleton-notes-task, .skeleton-dashboard-group {
   height: 0.5rem;
   border-radius: .125rem;
 }
@@ -110,13 +121,24 @@ pre {
   height: 250px;
 }
 
+.skeleton-dashboard-group {
+  height: 200px;
+  margin: 5px;
+}
+
 
 @keyframes skeletonLoading {
   0% {
-    background-color: hsl(200, 20%, 70%);
+    background-color: hsl(200, 20%, 80%);
   }
   100% {
     background-color: hsl(200, 20%, 95%);
+  }
+}
+
+@keyframes shine {	
+  to {
+    background-position: 100% 0, /* move highlight to right */ 0 0;
   }
 }
 

@@ -16,6 +16,17 @@ const DashboardItems = () => {
 
     const folderState = useSelector((state) => state.notesDuck.folders);
 
+    if (folderState['SkeletonFolder']) {
+        return (
+            <DashboardItemsContainer>
+                <div className='skeleton skeleton-dashboard-group'></div>
+                <div className='skeleton skeleton-dashboard-group'></div>
+                <div className='skeleton skeleton-dashboard-group'></div>
+                <div className='skeleton skeleton-dashboard-group'></div>
+            </DashboardItemsContainer>
+        );
+    }
+
     return (
         <DashboardItemsContainer>
             {Object.keys(folderState)?.map((folder) =>

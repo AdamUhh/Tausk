@@ -9,6 +9,7 @@ import {
     DELETE_GROUP_POST,
     DELETE_TASK_POST,
     EDIT_TASK_POST,
+    GET_DATA_POST,
     RENAME_CARD_POST,
     RENAME_FOLDER_POST,
     RENAME_GROUP_POST,
@@ -32,12 +33,14 @@ import {
     handleUpdateFolderHasGroupPost,
     handleUpdateGroupHasCardPost,
     handleUpdateCardHasTaskPost,
+    handleGetDataPost,
 } from './notes/notesHandler';
 // ? the * after function is a generator function
 // ? This is where we look for any actions that have been dispatched by the redux store
 // ? we map it to the handler functions that will actually call the requests that make the API calls
 function* watchAll() {
     yield all([
+        takeLatest(GET_DATA_POST, handleGetDataPost),
         takeLatest(ADD_FOLDER_POST, handleAddFolderPost),
         takeLatest(ADD_GROUP_POST, handleAddGroupPost),
         takeLatest(ADD_CARD_POST, handleAddCardPost),

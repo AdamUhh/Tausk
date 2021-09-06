@@ -122,6 +122,31 @@ const SidebarItems = () => {
         setCollapse(true);
     }
 
+    if (folderState['SkeletonFolder']) {
+        return (
+            <SidebarItemsContainer>
+                <div className='skeleton skeleton-folder'></div>
+                <div className='skeleton skeleton-group'></div>
+                <div className='skeleton skeleton-card'></div>
+                <div className='skeleton skeleton-task'></div>
+                
+                <div className='skeleton skeleton-folder'></div>
+                <div className='skeleton skeleton-group'></div>
+                <div className='skeleton skeleton-card'></div>
+                <div className='skeleton skeleton-task'></div>
+                <div className='skeleton skeleton-group'></div>
+                <div className='skeleton skeleton-card'></div>
+
+                <div className='skeleton skeleton-folder'></div>
+                <div className='skeleton skeleton-group'></div>
+                <div className='skeleton skeleton-card'></div>
+                <div className='skeleton skeleton-task'></div>
+                <div className='skeleton skeleton-task'></div>
+                <div className='skeleton skeleton-task'></div>
+            </SidebarItemsContainer>
+        );
+    }
+
     return (
         <DragDropContext onDragEnd={handleDragEnd} onDragStart={handleCollapse}>
             <SidebarItemsContainer>

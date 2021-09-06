@@ -39,9 +39,10 @@ const ModalAddGroup = () => {
     const [disabled, setDisabled] = useState(false);
     const [toasterState, setToasterState] = useToaster();
 
-    const [selectedOption, setSelectedOption] = useState('Todo');
-
     const foldersState = useSelector((state) => state.notesDuck.folders);
+    var firstFolder = Object.keys(foldersState)[0];
+
+    const [selectedOption, setSelectedOption] = useState(firstFolder);
 
     const dispatch = useDispatch();
     const { currentUser } = useAuth();
@@ -145,9 +146,15 @@ const ModalAddGroup = () => {
                 <CustomModalFooter>
                     <CustomModalButton
                         onClick={handleSubmit}
-                        disabled={disabled}
+                        disabled={disabled || !firstFolder}
                     >
-                        {disabled ? <LoadingIcon /> : 'Add Group'}
+                        {!firstFolder ? (
+                            'No Folders Found!'
+                        ) : disabled ? (
+                            <LoadingIcon />
+                        ) : (
+                            'Add Group'
+                        )}
                     </CustomModalButton>
                 </CustomModalFooter>
             </CustomModalWrapper>

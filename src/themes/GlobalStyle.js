@@ -9,18 +9,11 @@ const GlobalStyle = createGlobalStyle`
   color: ${({ theme }) => theme.global.textColor};
 }
 
-ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
 a {
   color: #8AB4F8;
     /* color: ${({ theme }) => theme.nav.nav}; */
   text-decoration: none;
 }
-
 
 body {
     color: ${({ theme }) => theme.global.color};
@@ -39,7 +32,6 @@ code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
         monospace;
 }
-
 
 pre {
   font-size: 13px;
@@ -65,8 +57,68 @@ pre {
   --mediumRadius: 8px;
   --mediumSmallRadius: 6px;
   --smallRadius: 4px;
+  --smallerRadius: 2px;
 }
 
+.skeleton {
+  opacity: 0.7;
+  animation: skeletonLoading 1s linear infinite alternate;
+  margin-bottom: 0.25rem;
+}
+
+.skeleton-folder, .skeleton-group, .skeleton-card, .skeleton-task, .skeleton-notes-nav, .skeleton-notes-nav-options, .skeleton-notes-card, .skeleton-notes-task {
+  height: 0.5rem;
+  border-radius: .125rem;
+}
+
+.skeleton-folder {
+  margin-top: 15px;
+  margin-bottom: -5px;
+}
+.skeleton-group {
+  height: 1.5rem;
+  margin-top: 10px;
+}
+.skeleton-card {
+  height: 1.5rem;
+  margin-left: 10%;
+}
+.skeleton-task {
+  height: 1.5rem;
+  margin-left: 20%;
+}
+
+.skeleton-notes-nav {
+  width: 60%;
+  height: 1rem;
+}
+.skeleton-notes-nav-options {
+  width: 30%;
+  height: 1rem;
+}
+.skeleton-notes-card {
+  width: 70%;
+  height: 1.5rem;
+  margin-top: 10px;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+.skeleton-notes-task {
+  width: 100%;
+  height: 250px;
+}
+
+
+@keyframes skeletonLoading {
+  0% {
+    background-color: hsl(200, 20%, 70%);
+  }
+  100% {
+    background-color: hsl(200, 20%, 95%);
+  }
+}
 
 
 ::-webkit-scrollbar {
@@ -92,14 +144,13 @@ table {
     width: 100%;
     border-collapse: collapse;
 }
-ul {
+ul, ol {
   margin-left: 30px;
-
-}
-ul, li {
-  list-style: disc;
-  padding: 0.15em 0;
   line-height: 1.6em;
+
+  li {
+    padding: 0.15em 0;
+  }
 }
 
 

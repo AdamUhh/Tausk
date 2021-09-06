@@ -1,5 +1,9 @@
 //* Styles
-import { NotesMainContainer } from './NotesStylings';
+import {
+    NotesMainContainer,
+    NotesNavContainer,
+    NotesWrapper,
+} from './NotesStylings';
 
 //* Components
 import NotesMain from './NotesMain';
@@ -29,6 +33,25 @@ const NotesHome = () => {
 
     const { folderidurl, groupidurl } = useParams();
     const folderState = useSelector((state) => state.notesDuck.folders);
+
+    if (folderState['SkeletonFolder']) {
+        return (
+            <>
+                <NotesNavContainer>
+                    <div className='skeleton skeleton-notes-nav'></div>
+                    <div className='skeleton skeleton-notes-nav-options'></div>
+                </NotesNavContainer>
+                <NotesMainContainer>
+                    <NotesWrapper>
+                        <div className='skeleton skeleton-notes-card'></div>
+                        <div className='skeleton skeleton-notes-task'></div>
+                        <div className='skeleton skeleton-notes-card'></div>
+                        <div className='skeleton skeleton-notes-task'></div>
+                    </NotesWrapper>
+                </NotesMainContainer>
+            </>
+        );
+    }
 
     return (
         <>

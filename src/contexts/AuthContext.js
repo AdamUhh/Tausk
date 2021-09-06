@@ -1,6 +1,18 @@
 // @ts-nocheck
 import React, { useContext, useEffect, useState } from 'react';
-import { auth, firestore } from '../firebase/firebase';
+import { auth, db } from '../firebase/firebase';
+import {
+    onAuthStateChanged,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    signOut,
+    sendPasswordResetEmail,
+    reauthenticateWithCredential,
+    updateEmail,
+    updatePassword,
+} from 'firebase/auth';
+
+import { doc, setDoc } from 'firebase/firestore';
 
 const AuthContext = React.createContext();
 
@@ -8,48 +20,47 @@ const AuthContext = React.createContext();
 export function useAuth() {
     return useContext(AuthContext);
 }
-//Todo: Convert to Firebase 9.0.0
+
 // note: Used in App.js - AuthProvider is AuthContext.Provider, read the comment on last return to understand
 export const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState();
     const [loading, setLoading] = useState(true);
 
     async function signup(username, email, password) {
-        return auth
-            .createUserWithEmailAndPassword(email, password)
-            .then((cred) => {
-                firestore
-                    .collection('Users')
-                    .doc(cred.user.uid)
-                    //Todo: Add stuff for settings here
-                    .set({ userId: cred.user.uid, username });
-            });
+        return createUserWithEmailAndPassword(auth, email, password).then(
+            (cred) => {
+                setDoc(doc(db, 'Users', cred.user.uid), {
+                    userId: cred.user.uid,
+                    username,
+                });
+            }
+        );
     }
 
     async function login(email, password) {
-        return auth.signInWithEmailAndPassword(email, password);
+        return signInWithEmailAndPassword(auth, email, password);
     }
 
     async function logout() {
-        return auth.signOut();
+        return signOut(auth);
     }
 
     async function resetPassword(email) {
-        return auth.sendPasswordResetEmail(email);
+        return sendPasswordResetEmail(auth, email);
     }
 
     async function updateEmail(email) {
-        return currentUser.updateEmail(email);
+        return updateEmail(auth.currentUser, email);
     }
 
     async function updatePassword(password) {
-        return currentUser.updatePassword(password);
+        return updatePassword(auth.currentUser, password);
     }
 
     useEffect(() => {
         //* expected: When the auth state changes - user is available - set current user,
         //* then return unsubscribe (method) that basically stops the unsubscribe method from running again
-        const unsubscribe = auth.onAuthStateChanged((user) => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
             setCurrentUser(user);
             setLoading(false);
         });

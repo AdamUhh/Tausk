@@ -2,23 +2,47 @@ import { v4 as uuidV4 } from 'uuid';
 
 const initialState = {
     folders: {
-        Todo: {
-            folderId: 'Todo',
-            title: 'Todo',
-            groupOrder: [],
-            hasGroups: {},
+        SkeletonFolder: {
+            folderId: 'SkeletonFolder',
+            title: '',
+            groupOrder: ['SkeletonGroup'],
+            hasGroups: {
+                SkeletonGroup: {
+                    groupId: 'SkeletonGroup',
+                    title: '',
+                    cardOrder: ['SkeletonCard'],
+                    hasCards: {
+                        SkeletonCard: {
+                            cardId: 'SkeletonCard',
+                            title: '',
+                            taskOrder: ['SkeletonTask'],
+                            hasTasks: {
+                                SkeletonTask: {
+                                    taskId: 'SkeletonTask',
+                                    title: '',
+                                    desc: '',
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
+        // Todo: {
+        //     folderId: 'Todo',
+        //     title: 'Todo',
+        //     groupOrder: [],
+        //     hasGroups: {},
+        // },
         //         TodoGroup1: {
         //             groupId: 'TodoGroup1',
         //             title: 'groupTitle1',
         //             cardOrder: ['TodoCard1'],
-
         //             hasCards: {
         //                 TodoCard1: {
         //                     cardId: 'TodoCard1',
         //                     title: 'cardTitle1',
         //                     taskOrder: ['TodoTask1'],
-
         //                     hasTasks: {
         //                         TodoTask1: {
         //                             taskId: 'taskId1',
@@ -33,13 +57,11 @@ const initialState = {
         //             groupId: 'TodoGroup2',
         //             title: 'groupTitle2',
         //             cardOrder: ['TodoCard2', 'TodoCard3'],
-
         //             hasCards: {
         //                 TodoCard2: {
         //                     cardId: 'TodoCard2',
         //                     title: 'cardTitle2',
         //                     taskOrder: ['TodoTask2'],
-
         //                     hasTasks: {
         //                         TodoTask2: {
         //                             taskId: 'taskId2',
@@ -52,7 +74,6 @@ const initialState = {
         //                     cardId: 'TodoCard3',
         //                     title: 'cardTitle3',
         //                     taskOrder: ['TodoTask3'],
-
         //                     hasTasks: {
         //                         TodoTask3: {
         //                             taskId: 'taskId3',
@@ -74,13 +95,11 @@ const initialState = {
         //             groupId: 'Todo2Group1',
         //             title: 'group2Title1',
         //             cardOrder: ['Todo2Card1'],
-
         //             hasCards: {
         //                 Todo2Card1: {
         //                     cardId: 'Todo2Card1',
         //                     title: 'card2Title1',
         //                     taskOrder: ['Todo2Task1'],
-
         //                     hasTasks: {
         //                         Todo2Task1: {
         //                             taskId: 'task2Id1',
@@ -97,6 +116,9 @@ const initialState = {
 };
 
 // ? Constants
+
+export const GET_DATA_POST = 'GET_DATA_POST';
+export const GET_DATA_AND_UPDATE_STATE = 'GET_DATA_AND_UPDATE_STATE';
 
 //* ADD
 export const ADD_FOLDER_POST = 'ADD_FOLDER_POST';
@@ -177,6 +199,14 @@ export const DELETE_CARD_HASTASK = 'DELETE_CARD_HASTASK';
 
 // ? Actions
 
+export const getDataPost = (userId) => ({
+    type: GET_DATA_POST,
+    userId,
+});
+export const getDataAndUpdateState = (Notes) => ({
+    type: GET_DATA_AND_UPDATE_STATE,
+    Notes,
+});
 //* Add --------------------------------------------------------
 export const addFolderPost = (userId, title) => ({
     type: ADD_FOLDER_POST,
@@ -618,6 +648,9 @@ export const editTask = (folderId, groupId, cardId, taskId, title, desc) => ({
 // ? Reducer
 const notesDuck = (state = initialState, action) => {
     switch (action.type) {
+        case GET_DATA_AND_UPDATE_STATE: {
+            return { ...state, folders: action.Notes };
+        }
         case ADD_FOLDER: {
             const { folderId, title } = action;
 

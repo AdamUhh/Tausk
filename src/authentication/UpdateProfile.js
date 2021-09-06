@@ -102,11 +102,12 @@ const UpdateProfile = () => {
                             </FormGroup>
                             <Button
                                 variant='primary'
-                                disabled={loading}
+                                disabled={true}
+                                // disabled={loading}
                                 style={{ marginTop: `1.5rem`, width: `100%` }}
                                 type='submit'
                             >
-                                Update
+                                Update - Currently Not working!
                             </Button>
                         </Form>
                     </CardBody>

@@ -1,5 +1,4 @@
 export const getFormattedTaskName = (desc) => {
-    console.log(desc);
 
     //Unorderd/Ordered
     if (desc.blocks[0].data.items) {

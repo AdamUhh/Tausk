@@ -44,7 +44,9 @@ const NotesBanner = ({ mode }) => {
         return (
             <NotesBannerContainer>
                 <NotesBannerHeader>Seems Empty...</NotesBannerHeader>
-                <NotesBannerFooter>So... How's your day been?</NotesBannerFooter>
+                <NotesBannerFooter>
+                    So... How's your day been?
+                </NotesBannerFooter>
             </NotesBannerContainer>
         );
 
@@ -53,7 +55,7 @@ const NotesBanner = ({ mode }) => {
             <NotesBannerContainer>
                 <NotesBannerHeader>Oops...</NotesBannerHeader>
                 <NotesBannerFooter>
-                    Seems like that doesn't exist 🤷‍♂️
+                    Seems like that URL doesn't exist 🤷‍♂️
                 </NotesBannerFooter>
             </NotesBannerContainer>
         );

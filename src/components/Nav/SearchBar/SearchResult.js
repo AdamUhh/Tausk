@@ -74,82 +74,22 @@ const SearchResult = ({ inputValue, filter }) => {
     }
 
     return (
-        <SearchResultContainer>
-            {filter.group &&
-                groupDataIdArr.map((groupDataArr) =>
-                    groupDataArr.map(
-                        (groupData) =>
-                            groupData.title.toLowerCase().search(inputValue) !==
-                                -1 && (
-                                <ResultItem
-                                    key={groupData.groupId}
-                                    onClick={() =>
-                                        handleGroupItem(
-                                            groupData.folderId,
-                                            groupData.groupId
-                                        )
-                                    }
-                                >
-                                    <IconButton
-                                        width='30px'
-                                        height='30px'
-                                        margin='0 10px 0 0'
-                                    >
-                                        G
-                                    </IconButton>
-                                    {groupData.title}
-                                </ResultItem>
-                            )
-                    )
-                )}
-            {filter.card &&
-                cardDataIdArr.map((cardDataArray) =>
-                    cardDataArray.map((cardDataArry) =>
-                        cardDataArry.map(
-                            (cardData) =>
-                                cardData.title
-                                    .toLowerCase()
-                                    .search(inputValue) !== -1 && (
-                                    <ResultItem
-                                        key={cardData.cardId}
-                                        onClick={() =>
-                                            handleCardItem(
-                                                cardData.folderId,
-                                                cardData.groupId,
-                                                cardData.cardId
-                                            )
-                                        }
-                                    >
-                                        <IconButton
-                                            width='30px'
-                                            height='30px'
-                                            margin='0 10px 0 0'
-                                        >
-                                            C
-                                        </IconButton>
-                                        {cardData.title}
-                                    </ResultItem>
-                                )
-                        )
-                    )
-                )}
-            {filter.task &&
-                taskDataIdArr.map((taskDataArray) =>
-                    taskDataArray.map((taskDataArry) =>
-                        taskDataArry.map((taskDataArr) =>
-                            taskDataArr.map(
-                                (taskData) =>
-                                    taskData.title
+        <>
+            {!folderState['SkeletonFolder'] && (
+                <SearchResultContainer>
+                    {filter.group &&
+                        groupDataIdArr.map((groupDataArr) =>
+                            groupDataArr.map(
+                                (groupData) =>
+                                    groupData.title
                                         .toLowerCase()
                                         .search(inputValue) !== -1 && (
                                         <ResultItem
-                                            key={taskData.taskId}
+                                            key={groupData.groupId}
                                             onClick={() =>
-                                                handleTaskItem(
-                                                    taskData.folderId,
-                                                    taskData.groupId,
-                                                    taskData.cardId,
-                                                    taskData.taskId
+                                                handleGroupItem(
+                                                    groupData.folderId,
+                                                    groupData.groupId
                                                 )
                                             }
                                         >
@@ -158,16 +98,81 @@ const SearchResult = ({ inputValue, filter }) => {
                                                 height='30px'
                                                 margin='0 10px 0 0'
                                             >
-                                                T
+                                                G
                                             </IconButton>
-                                            {taskData.title}
+                                            {groupData.title}
                                         </ResultItem>
                                     )
                             )
-                        )
-                    )
-                )}
-        </SearchResultContainer>
+                        )}
+                    {filter.card &&
+                        cardDataIdArr.map((cardDataArray) =>
+                            cardDataArray.map((cardDataArry) =>
+                                cardDataArry.map(
+                                    (cardData) =>
+                                        cardData.title
+                                            .toLowerCase()
+                                            .search(inputValue) !== -1 && (
+                                            <ResultItem
+                                                key={cardData.cardId}
+                                                onClick={() =>
+                                                    handleCardItem(
+                                                        cardData.folderId,
+                                                        cardData.groupId,
+                                                        cardData.cardId
+                                                    )
+                                                }
+                                            >
+                                                <IconButton
+                                                    width='30px'
+                                                    height='30px'
+                                                    margin='0 10px 0 0'
+                                                >
+                                                    C
+                                                </IconButton>
+                                                {cardData.title}
+                                            </ResultItem>
+                                        )
+                                )
+                            )
+                        )}
+                    {filter.task &&
+                        taskDataIdArr.map((taskDataArray) =>
+                            taskDataArray.map((taskDataArry) =>
+                                taskDataArry.map((taskDataArr) =>
+                                    taskDataArr.map(
+                                        (taskData) =>
+                                            taskData.title
+                                                .toLowerCase()
+                                                .search(inputValue) !== -1 && (
+                                                <ResultItem
+                                                    key={taskData.taskId}
+                                                    onClick={() =>
+                                                        handleTaskItem(
+                                                            taskData.folderId,
+                                                            taskData.groupId,
+                                                            taskData.cardId,
+                                                            taskData.taskId
+                                                        )
+                                                    }
+                                                >
+                                                    <IconButton
+                                                        width='30px'
+                                                        height='30px'
+                                                        margin='0 10px 0 0'
+                                                    >
+                                                        T
+                                                    </IconButton>
+                                                    {taskData.title}
+                                                </ResultItem>
+                                            )
+                                    )
+                                )
+                            )
+                        )}
+                </SearchResultContainer>
+            )}
+        </>
     );
 };
 

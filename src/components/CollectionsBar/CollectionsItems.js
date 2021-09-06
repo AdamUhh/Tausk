@@ -8,8 +8,8 @@ import React from 'react';
 //* SVG
 import HomeIcon from '../SVG/HomeIcon';
 import NotesIcon from '../SVG/NotesIcon';
-import CollabIcon from '../SVG/CollabIcon';
-import CalendarIcon from '../SVG/CalendarIcon';
+// import CollabIcon from '../SVG/CollabIcon';
+// import CalendarIcon from '../SVG/CalendarIcon';
 
 
 const CollectionItems = () => {
@@ -19,8 +19,8 @@ const CollectionItems = () => {
         <>
             <CollectionsItem icon={<HomeIcon />} goTo='' />
             <CollectionsItem icon={<NotesIcon />} goTo='Notes' />
-            <CollectionsItem icon={<CollabIcon />} goTo='Collab' />
-            <CollectionsItem icon={<CalendarIcon />} goTo='Calendar' />
+            {/* <CollectionsItem icon={<CollabIcon />} goTo='Collab' /> */}
+            {/* <CollectionsItem icon={<CalendarIcon />} goTo='Calendar' /> */}
         </>
     );
 };

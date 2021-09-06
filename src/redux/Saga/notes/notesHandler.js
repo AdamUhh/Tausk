@@ -1,4 +1,4 @@
-import { put } from 'redux-saga/effects';
+import { put, all, call, select } from 'redux-saga/effects';
 import { resetView } from '../../ducks/modalDuck';
 import {
     addCard,
@@ -16,6 +16,7 @@ import {
     deleteGroupHasCard,
     deleteTask,
     editTask,
+    getDataAndUpdateState,
     moveCardHasTaskData,
     moveFolderHasGroupData,
     moveGroupHasCardData,
@@ -29,6 +30,27 @@ import {
     updateFolderHasGroup,
     updateGroupHasCard,
 } from '../../ducks/notesDuck';
+import {
+    requestDeleteCard,
+    requestDeleteFolder,
+    requestDeleteGroup,
+    requestDeleteTask,
+    requestEditTask,
+    requestGetFolderData,
+    requestGetGroupData,
+    requestGetCardData,
+    requestGetTaskData,
+    requestPostCard,
+    requestPostFolder,
+    requestPostGroup,
+    requestPostTask,
+    requestRenameCard,
+    requestRenameFolder,
+    requestRenameGroup,
+    requestUpdateFolderGroupOrder,
+    requestUpdateGroupCardOrder,
+    requestUpdateCardTaskOrder,
+} from './notesRequester';
 
 //Todo: IMPORTANT - additionally, make a modal pop up that asks if you would like to delete all the
 
@@ -37,12 +59,69 @@ import {
 //Todo: When deleting a group, redirect to first group (if there is one) or to /Notes
 //Todo: When deleting a (focused) card, redirect to that cards previous group
 
+export function* handleGetDataPost(action) {
+    try {
+        const FolderRes = yield call(requestGetFolderData, action);
+        console.log('Folder response:');
+
+        const GroupRes = yield call(requestGetGroupData, action);
+        console.log('Group response:');
+
+        const CardRes = yield call(requestGetCardData, action);
+        console.log('Card response:');
+
+        const TaskRes = yield call(requestGetTaskData, action);
+        console.log('Task response:');
+
+        var Notes = {};
+        FolderRes.forEach((folderDoc) => {
+            Notes[folderDoc.id] = {
+                uuid: folderDoc.data().uuid,
+                title: folderDoc.data().title,
+                groupOrder: folderDoc.data().groupOrder,
+                hasGroups: {},
+            };
+            GroupRes.forEach((groupDoc) => {
+                Notes[folderDoc.id].hasGroups[groupDoc.id] = {
+                    uuid: groupDoc.data().uuid,
+                    title: groupDoc.data().title,
+                    cardOrder: groupDoc.data().cardOrder,
+                    hasCards: {},
+                };
+                CardRes.forEach((cardDoc) => {
+                    Notes[folderDoc.id].hasGroups[groupDoc.id].hasCards[
+                        cardDoc.id
+                    ] = {
+                        uuid: cardDoc.data().uuid,
+                        title: cardDoc.data().title,
+                        taskOrder: cardDoc.data().taskOrder,
+                        hasTasks: {},
+                    };
+                    TaskRes.forEach((taskDoc) => {
+                        Notes[folderDoc.id].hasGroups[groupDoc.id].hasCards[
+                            cardDoc.id
+                        ].hasTasks[taskDoc.id] = {
+                            uuid: taskDoc.data().uuid,
+                            title: taskDoc.data().title || '',
+                            desc: taskDoc.data().desc || '',
+                        };
+                    });
+                });
+            });
+        });
+
+        yield put(getDataAndUpdateState(Notes));
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 //* Folder --------------------------------------------------------
 export function* handleAddFolderPost(action) {
     try {
-        const { userId, folderId, title } = action;
+        const { folderId, title } = action;
         // wait for this call to finish before we move on
-        // yield call(requestPostFolder, action);
+        yield call(requestPostFolder, action);
 
         // stores data inside the redux store using the users reducer
         yield put(addFolder(folderId, title));
@@ -54,13 +133,12 @@ export function* handleAddFolderPost(action) {
 }
 export function* handleRenameFolderPost(action) {
     try {
-        const { userId, folderId, title } = action;
+        const { folderId, title } = action;
 
         // wait for this call to finish before we move on
-        // yield call(requestPostFolder, action);
+        yield call(requestRenameFolder, action);
 
         // stores data inside the redux store using the users reducer
-
         yield put(renameFolder(folderId, title));
 
         yield put(resetView());
@@ -70,12 +148,48 @@ export function* handleRenameFolderPost(action) {
 }
 export function* handleDeleteFolderPost(action) {
     try {
-        const { userId, folderId } = action;
+        const { folderId } = action;
 
-        // wait for this call to finish before we move on
-        // yield call(requestPostFolder, action);
+        const getFolderState = (state) => state.notesDuck.folders;
+        const folderState = yield select(getFolderState);
 
-        // stores data inside the redux store using the users reducer
+        var groupOrder = folderState[folderId].groupOrder;
+
+        var cardOrder = [];
+        var taskOrder = [];
+
+        groupOrder.map((groupId) => {
+            folderState[folderId].hasGroups[groupId].cardOrder.map((cardId) =>
+                taskOrder.push(
+                    ...folderState[folderId].hasGroups[groupId].hasCards[cardId]
+                        .taskOrder
+                )
+            );
+            cardOrder.push(
+                ...folderState[folderId].hasGroups[groupId].cardOrder
+            );
+        });
+
+        yield all(
+            taskOrder.map((taskId) =>
+                call(requestDeleteTask, { userId: action.userId, taskId })
+            )
+        );
+        yield all(
+            cardOrder.map((cardId) =>
+                call(requestDeleteCard, { userId: action.userId, cardId })
+            )
+        );
+        yield all(
+            groupOrder.map((groupId) =>
+                call(requestDeleteGroup, { userId: action.userId, groupId })
+            )
+        );
+
+        yield call(requestDeleteFolder, {
+            userId: action.userId,
+            folderId: action.folderId,
+        });
 
         yield put(deleteFolder(folderId));
 
@@ -88,9 +202,9 @@ export function* handleDeleteFolderPost(action) {
 //* Group --------------------------------------------------------
 export function* handleAddGroupPost(action) {
     try {
-        const { history, userId, folderId, groupId, title } = action;
+        const { history, folderId, groupId, title } = action;
         // wait for this call to finish before we move on
-        // yield call(requestPostFolder, action);
+        yield call(requestPostGroup, action);
 
         // stores data inside the redux store using the users reducer
         yield put(addGroup(folderId, groupId, title));
@@ -105,12 +219,11 @@ export function* handleAddGroupPost(action) {
 }
 export function* handleRenameGroupPost(action) {
     try {
-        const { userId, folderId, groupId, title } = action;
+        const { folderId, groupId, title } = action;
         // wait for this call to finish before we move on
-        // yield call(requestPostFolder, action);
+        yield call(requestRenameGroup, action);
 
         // stores data inside the redux store using the users reducer
-
         yield put(renameGroup(folderId, groupId, title));
 
         yield put(resetView());
@@ -120,10 +233,34 @@ export function* handleRenameGroupPost(action) {
 }
 export function* handleDeleteGroupPost(action) {
     try {
-        const { userId, folderId, groupId } = action;
+        const { folderId, groupId } = action;
 
-        // wait for this call to finish before we move on
-        // yield call(requestPostFolder, action);
+        const getFolderState = (state) => state.notesDuck.folders;
+        const folderState = yield select(getFolderState);
+
+        var cardOrder = folderState[folderId].hasGroups[groupId].cardOrder;
+
+        var taskOrder = [];
+
+        cardOrder.map((cardId) => {
+            taskOrder.push(
+                ...folderState[folderId].hasGroups[groupId].hasCards[cardId]
+                    .taskOrder
+            );
+        });
+
+        yield all(
+            taskOrder.map((taskId) =>
+                call(requestDeleteTask, { userId: action.userId, taskId })
+            )
+        );
+        yield all(
+            cardOrder.map((cardId) =>
+                call(requestDeleteCard, { userId: action.userId, cardId })
+            )
+        );
+
+        yield call(requestDeleteGroup, action);
 
         // stores data inside the redux store using the users reducer
         yield put(deleteFolderHasGroup(folderId, groupId));
@@ -139,7 +276,6 @@ export function* handleDeleteGroupPost(action) {
 export function* handleUpdateFolderHasGroupPost(action) {
     try {
         const {
-            userId,
             sourceFolderId,
             destinationFolderId,
             groupId,
@@ -157,6 +293,15 @@ export function* handleUpdateFolderHasGroupPost(action) {
             )
         );
 
+        const getFolderState = (state) => state.notesDuck.folders;
+        const folderState = yield select(getFolderState);
+
+        yield call(requestUpdateFolderGroupOrder, {
+            userId: action.userId,
+            folderId: action.sourceFolderId,
+            groupOrder: folderState[sourceFolderId].groupOrder,
+        });
+
         if (sourceFolderId !== destinationFolderId) {
             yield put(
                 moveFolderHasGroupData(
@@ -173,6 +318,12 @@ export function* handleUpdateFolderHasGroupPost(action) {
                 )
             );
             yield put(deleteGroup(sourceFolderId, groupId));
+
+            yield call(requestUpdateFolderGroupOrder, {
+                userId: action.userId,
+                folderId: action.destinationFolderId,
+                groupOrder: folderState[destinationFolderId].groupOrder,
+            });
         }
     } catch (error) {
         console.log(error);
@@ -180,44 +331,11 @@ export function* handleUpdateFolderHasGroupPost(action) {
 }
 
 //* Cards --------------------------------------------------------
-export function* handleRenameCardPost(action) {
-    try {
-        const { userId, folderId, groupId, cardId, title } = action;
-        // wait for this call to finish before we move on
-        // yield call(requestPostFolder, action);
-
-        // stores data inside the redux store using the users reducer
-
-        yield put(renameCard(folderId, groupId, cardId, title));
-
-        yield put(resetView());
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-export function* handleDeleteCardPost(action) {
-    try {
-        const { userId, folderId, groupId, cardId } = action;
-        // wait for this call to finish before we move on
-        // yield call(requestPostFolder, action);
-
-        // stores data inside the redux store using the users reducer
-
-        yield put(deleteGroupHasCard(folderId, groupId, cardId));
-        yield put(deleteCard(folderId, groupId, cardId));
-
-        yield put(resetView());
-    } catch (error) {
-        console.log(error);
-    }
-}
-
 export function* handleAddCardPost(action) {
     try {
-        const { userId, folderId, groupId, cardId, title } = action;
+        const { folderId, groupId, cardId, title } = action;
         // wait for this call to finish before we move on
-        // yield call(requestPostFolder, action);
+        yield call(requestPostCard, action);
 
         // stores data inside the redux store using the users reducer
         yield put(addCard(folderId, groupId, cardId, title));
@@ -228,10 +346,51 @@ export function* handleAddCardPost(action) {
         console.log(error);
     }
 }
+export function* handleRenameCardPost(action) {
+    try {
+        const { folderId, groupId, cardId, title } = action;
+        // wait for this call to finish before we move on
+        yield call(requestRenameCard, action);
+
+        // stores data inside the redux store using the users reducer
+
+        yield put(renameCard(folderId, groupId, cardId, title));
+
+        yield put(resetView());
+    } catch (error) {
+        console.log(error);
+    }
+}
+export function* handleDeleteCardPost(action) {
+    try {
+        const { folderId, groupId, cardId } = action;
+
+        const getFolderState = (state) => state.notesDuck.folders;
+        const folderState = yield select(getFolderState);
+
+        var taskOrder =
+            folderState[folderId].hasGroups[groupId].hasCards[cardId].taskOrder;
+
+        yield all(
+            taskOrder.map((taskId) =>
+                call(requestDeleteTask, { userId: action.userId, taskId })
+            )
+        );
+
+        yield call(requestDeleteCard, action);
+
+        yield put(deleteGroupHasCard(folderId, groupId, cardId));
+        yield put(deleteCard(folderId, groupId, cardId));
+
+        yield put(resetView());
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 export function* handleUpdateGroupHasCardPost(action) {
     try {
         const {
-            userId,
             sourceFolderId,
             sourceGroupId,
             destinationFolderId,
@@ -253,6 +412,16 @@ export function* handleUpdateGroupHasCardPost(action) {
             )
         );
 
+        const getFolderState = (state) => state.notesDuck.folders;
+        const folderState = yield select(getFolderState);
+
+        yield call(requestUpdateGroupCardOrder, {
+            userId: action.userId,
+            groupId: action.sourceGroupId,
+            cardOrder:
+                folderState[sourceFolderId].hasGroups[sourceGroupId].cardOrder,
+        });
+
         if (sourceGroupId !== destinationGroupId) {
             yield put(
                 moveGroupHasCardData(
@@ -272,35 +441,26 @@ export function* handleUpdateGroupHasCardPost(action) {
                 )
             );
             yield put(deleteCard(sourceFolderId, sourceGroupId, cardId));
+
+            yield call(requestUpdateGroupCardOrder, {
+                userId: action.userId,
+                groupId: action.destinationGroupId,
+                cardOrder:
+                    folderState[destinationFolderId].hasGroups[
+                        destinationGroupId
+                    ].cardOrder,
+            });
         }
     } catch (error) {
         console.log(error);
     }
 }
 //* Tasks --------------------------------------------------------
-export function* handleDeleteTaskPost(action) {
-    try {
-        const { userId, folderId, groupId, cardId, taskId } = action;
-        // wait for this call to finish before we move on
-        // yield call(requestPostFolder, action);
-
-        // stores data inside the redux store using the users reducer
-
-        yield put(deleteCardHasTask(folderId, groupId, cardId, taskId));
-        yield put(deleteTask(folderId, groupId, cardId, taskId));
-
-        yield put(resetView());
-    } catch (error) {
-        console.log(error);
-    }
-}
-
 export function* handleAddTaskPost(action) {
     try {
-        const { userId, folderId, groupId, cardId, taskId, title, desc } =
-            action;
+        const { folderId, groupId, cardId, taskId, title, desc } = action;
         // wait for this call to finish before we move on
-        // yield call(requestPostFolder, action);
+        yield call(requestPostTask, action);
 
         // stores data inside the redux store using the users reducer
         yield put(addTask(folderId, groupId, cardId, taskId, title, desc));
@@ -311,13 +471,11 @@ export function* handleAddTaskPost(action) {
         console.log(error);
     }
 }
-
 export function* handleEditTaskPost(action) {
     try {
-        const { userId, folderId, groupId, cardId, taskId, title, desc } =
-            action;
+        const { folderId, groupId, cardId, taskId, title, desc } = action;
         // wait for this call to finish before we move on
-        // yield call(requestPostFolder, action);
+        yield call(requestEditTask, action);
 
         // stores data inside the redux store using the users reducer
 
@@ -328,10 +486,24 @@ export function* handleEditTaskPost(action) {
         console.log(error);
     }
 }
+export function* handleDeleteTaskPost(action) {
+    try {
+        const { folderId, groupId, cardId, taskId } = action;
+
+        yield call(requestDeleteTask, action);
+
+        yield put(deleteCardHasTask(folderId, groupId, cardId, taskId));
+        yield put(deleteTask(folderId, groupId, cardId, taskId));
+
+        yield put(resetView());
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 export function* handleUpdateCardHasTaskPost(action) {
     try {
         const {
-            userId,
             sourceFolderId,
             sourceGroupId,
             sourceCardId,
@@ -357,6 +529,18 @@ export function* handleUpdateCardHasTaskPost(action) {
             )
         );
 
+        const getFolderState = (state) => state.notesDuck.folders;
+        const folderState = yield select(getFolderState);
+
+        yield call(requestUpdateCardTaskOrder, {
+            userId: action.userId,
+            cardId: action.sourceCardId,
+            taskOrder:
+                folderState[sourceFolderId].hasGroups[sourceGroupId].hasCards[
+                    sourceCardId
+                ].taskOrder,
+        });
+
         if (sourceCardId !== destinationCardId) {
             yield put(
                 moveCardHasTaskData(
@@ -381,6 +565,15 @@ export function* handleUpdateCardHasTaskPost(action) {
             yield put(
                 deleteTask(sourceFolderId, sourceGroupId, sourceCardId, taskId)
             );
+
+            yield call(requestUpdateCardTaskOrder, {
+                userId: action.userId,
+                cardId: action.destinationCardId,
+                taskOrder:
+                    folderState[destinationFolderId].hasGroups[
+                        destinationGroupId
+                    ].hasCards[destinationCardId].taskOrder,
+            });
         }
     } catch (error) {
         console.log(error);

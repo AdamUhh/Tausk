@@ -41,27 +41,29 @@ const SidebarFolder = ({
     const countref = useRef(0); // remove this
     console.log('SidebarFolder.js: ' + countref.current++); // remove this
 
+    
+
     return (
         <SidebarFolderContainer>
             <SidebarFolderWrapper>
                 <TextContainer padding='5px 3px 5px 3px' minHeight='0'>
                     <TextWrapper>{title}</TextWrapper>
                 </TextContainer>
-                {folderId !== 'Todo' && (
-                    <OptionsContainer>
-                        <ContextDropdown
-                            icon={<HorizontalDots height='20px' />}
-                            width='20px'
-                            height='10px'
-                            transparent
-                        >
-                            <ContextSidebarFolder
-                                folderId={folderId}
-                                title={title}
-                            />
-                        </ContextDropdown>
-                    </OptionsContainer>
-                )}
+                {/* {/* {folderId !== 'Todo' && ( */}
+                <OptionsContainer>
+                    <ContextDropdown
+                        icon={<HorizontalDots height='20px' />}
+                        width='20px'
+                        height='10px'
+                        transparent
+                    >
+                        <ContextSidebarFolder
+                            folderId={folderId}
+                            title={title}
+                        />
+                    </ContextDropdown>
+                </OptionsContainer>
+                {/* )}  */}
             </SidebarFolderWrapper>
             <Droppable droppableId={folderId} type='group'>
                 {(provided, snapshot) => (

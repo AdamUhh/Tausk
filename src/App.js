@@ -16,8 +16,8 @@ import PrivateRoute from './authentication/PrivateRoute';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useAuth } from './contexts/AuthContext';
-// import { useEffect } from 'react';
-// import { getData } from './Redux/ducks/notesDuck.js';
+import { getDataPost } from './redux/ducks/notesDuck';
+import { useEffect } from 'react';
 
 //* Styled
 
@@ -25,13 +25,13 @@ function App() {
     const theme = useSelector((state) => state.themeDuck.theme);
 
     const { currentUser } = useAuth();
-    // const dispatch = useDispatch();
-    // useEffect(() => {
-    //     if (currentUser && currentUser.uid) {
-    //         dispatch(getData(currentUser.uid));
-    //     }
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [currentUser]);
+    const dispatch = useDispatch();
+    useEffect(() => {
+        if (currentUser && currentUser.uid) {
+            dispatch(getDataPost(currentUser.uid));
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentUser]);
 
     return (
         <ThemeProvider theme={theme}>

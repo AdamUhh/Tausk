@@ -203,9 +203,10 @@ export const getDataPost = (userId) => ({
     type: GET_DATA_POST,
     userId,
 });
-export const getDataAndUpdateState = (Notes) => ({
+export const getDataAndUpdateState = (Notes, username) => ({
     type: GET_DATA_AND_UPDATE_STATE,
     Notes,
+    username,
 });
 //* Add --------------------------------------------------------
 export const addFolderPost = (userId, title) => ({
@@ -649,7 +650,11 @@ export const editTask = (folderId, groupId, cardId, taskId, title, desc) => ({
 const notesDuck = (state = initialState, action) => {
     switch (action.type) {
         case GET_DATA_AND_UPDATE_STATE: {
-            return { ...state, folders: action.Notes };
+            return {
+                ...state,
+                folders: action.Notes,
+                settings: { username: action.username },
+            };
         }
         case ADD_FOLDER: {
             const { folderId, title } = action;

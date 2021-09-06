@@ -63,6 +63,7 @@ pre {
 .skeleton {
   opacity: 0.7;
   margin-bottom: 0.25rem;
+  border-radius: .125rem;
   /* background: linear-gradient(	  
     to right,
     rgba(255, 255, 255, 0),
@@ -77,9 +78,8 @@ pre {
     animation: skeletonLoading 1.5s linear infinite alternate;
 }
 
-.skeleton-folder, .skeleton-group, .skeleton-card, .skeleton-task, .skeleton-notes-nav, .skeleton-notes-nav-options, .skeleton-notes-card, .skeleton-notes-task, .skeleton-dashboard-group {
+.skeleton-folder{
   height: 0.5rem;
-  border-radius: .125rem;
 }
 
 .skeleton-folder {
@@ -125,6 +125,16 @@ pre {
   height: 200px;
   margin: 5px;
 }
+.skeleton-dashboard-header {
+  height: 1.75rem;
+  width: 40%;
+  margin: .125rem 0;
+}
+.skeleton-dashboard-header-date {
+  height: 1.25rem;
+  width: 28%;
+}
+
 
 
 @keyframes skeletonLoading {

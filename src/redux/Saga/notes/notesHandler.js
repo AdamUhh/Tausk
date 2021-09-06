@@ -50,6 +50,7 @@ import {
     requestUpdateFolderGroupOrder,
     requestUpdateGroupCardOrder,
     requestUpdateCardTaskOrder,
+    requestSettingsData,
 } from './notesRequester';
 
 //Todo: IMPORTANT - additionally, make a modal pop up that asks if you would like to delete all the
@@ -61,6 +62,9 @@ import {
 
 export function* handleGetDataPost(action) {
     try {
+        const SettingRes = yield call(requestSettingsData, action);
+        console.log('Setting response:')
+
         const FolderRes = yield call(requestGetFolderData, action);
         console.log('Folder response:');
 
@@ -109,8 +113,9 @@ export function* handleGetDataPost(action) {
                 });
             });
         });
+        console.log(SettingRes)
 
-        yield put(getDataAndUpdateState(Notes));
+        yield put(getDataAndUpdateState(Notes, SettingRes.username));
     } catch (error) {
         console.log(error);
     }

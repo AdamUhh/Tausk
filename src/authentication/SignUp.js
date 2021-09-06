@@ -79,6 +79,7 @@ const SignUp = () => {
                                     ref={usernameRef}
                                     required
                                     placeholder='Username'
+                                    maxLength={36}
                                 ></FormControl>
                             </FormGroup>
                             <FormGroup id='email'>

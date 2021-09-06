@@ -1,18 +1,25 @@
 import {
     doc,
+    getDoc,
     getDocs,
     collection,
     arrayUnion,
     arrayRemove,
-    deleteField,
-    query,
-    where,
     setDoc,
     updateDoc,
     deleteDoc,
 } from 'firebase/firestore';
 import { db } from '../../../firebase/firebase';
-
+export const requestSettingsData = async (action) => {
+    const { userId } = action;
+    const docSnap = await getDoc(doc(db, 'Users', userId));
+    if (docSnap.exists()) {
+        return docSnap.data();
+    } else {
+        // doc.data() will be undefined in this case
+        return '';
+    }
+};
 export const requestGetFolderData = async (action) => {
     const { userId } = action;
 

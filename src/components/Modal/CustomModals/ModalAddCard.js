@@ -64,7 +64,7 @@ const ModalAddCard = () => {
     const { currentUser } = useAuth();
     function handleSubmit() {
         if (inputValue.length > 0 && inputValue.length <= maxInputLength) {
-            console.log(inputValue);
+            // console.log(inputValue);
             setDisabled(true);
 
             //Dispatch to notesDuck (with NAME)

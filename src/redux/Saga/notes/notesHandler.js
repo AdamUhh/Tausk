@@ -90,34 +90,52 @@ export function* handleGetDataPost(action) {
                 hasGroups: {},
             };
             GroupRes.forEach((groupDoc) => {
-                Notes[folderDoc.id].hasGroups[groupDoc.id] = {
-                    uuid: groupDoc.data().uuid,
-                    title: groupDoc.data().title,
-                    cardOrder: groupDoc.data().cardOrder,
-                    hasCards: {},
-                };
-                CardRes.forEach((cardDoc) => {
-                    Notes[folderDoc.id].hasGroups[groupDoc.id].hasCards[
-                        cardDoc.id
-                    ] = {
-                        uuid: cardDoc.data().uuid,
-                        title: cardDoc.data().title,
-                        taskOrder: cardDoc.data().taskOrder,
-                        hasTasks: {},
+                if (Notes[folderDoc.id].groupOrder.includes(groupDoc.id)) {
+                    Notes[folderDoc.id].hasGroups[groupDoc.id] = {
+                        uuid: groupDoc.data().uuid,
+                        title: groupDoc.data().title,
+                        cardOrder: groupDoc.data().cardOrder,
+                        hasCards: {},
                     };
-                    TaskRes.forEach((taskDoc) => {
-                        Notes[folderDoc.id].hasGroups[groupDoc.id].hasCards[
-                            cardDoc.id
-                        ].hasTasks[taskDoc.id] = {
-                            uuid: taskDoc.data().uuid,
-                            title: taskDoc.data().title || '',
-                            desc: taskDoc.data().desc || '',
-                        };
+                    CardRes.forEach((cardDoc) => {
+                        if (
+                            Notes[folderDoc.id].hasGroups[
+                                groupDoc.id
+                            ].cardOrder.includes(cardDoc.id)
+                        ) {
+                            Notes[folderDoc.id].hasGroups[groupDoc.id].hasCards[
+                                cardDoc.id
+                            ] = {
+                                uuid: cardDoc.data().uuid,
+                                title: cardDoc.data().title,
+                                taskOrder: cardDoc.data().taskOrder,
+                                hasTasks: {},
+                            };
+                            TaskRes.forEach((taskDoc) => {
+                                if (
+                                    Notes[folderDoc.id].hasGroups[
+                                        groupDoc.id
+                                    ].hasCards[cardDoc.id].taskOrder.includes(
+                                        taskDoc.id
+                                    )
+                                ) {
+                                    Notes[folderDoc.id].hasGroups[
+                                        groupDoc.id
+                                    ].hasCards[cardDoc.id].hasTasks[
+                                        taskDoc.id
+                                    ] = {
+                                        uuid: taskDoc.data().uuid,
+                                        title: taskDoc.data().title || '',
+                                        desc: taskDoc.data().desc || '',
+                                    };
+                                }
+                            });
+                        }
                     });
-                });
+                }
             });
         });
-
+        
         yield put(
             getDataAndUpdateState(
                 Notes,

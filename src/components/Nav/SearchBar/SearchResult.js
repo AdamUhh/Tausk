@@ -1,24 +1,24 @@
 //* Styles
+import { ResultItem, SearchResultContainer } from '../NavStylings';
+import { IconButton } from '../../global/ExportedStylings';
 
 //* Components
+import { getFormattedTaskName } from '../../../utils/GetFormattedTaskName';
 
 //* Hooks, React
-
-//* Styled
 import { useRef } from 'react'; // remove this
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { IconButton } from '../../global/ExportedStylings';
-import { ResultItem, SearchResultContainer } from '../NavStylings';
 
 const SearchResult = ({ inputValue, filter }) => {
     const countref = useRef(0); // remove this
     console.log('SearchResult.js: ' + countref.current++); // remove this
 
     const history = useHistory();
+    const folderDataIdArr = useSelector(
+        (state) => state.notesDuck.settings.folderOrder
+    );
     const folderState = useSelector((state) => state.notesDuck.folders);
-
-    const folderDataIdArr = Object.keys(folderState);
 
     const groupDataIdArr = folderDataIdArr.map((folderId) =>
         Object.keys(folderState[folderId].hasGroups).map((groupId) => ({
@@ -58,6 +58,9 @@ const SearchResult = ({ inputValue, filter }) => {
                         taskId: taskId,
                         title: folderState[folderId].hasGroups[groupId]
                             .hasCards[cardId].hasTasks[taskId].title,
+                        desc: folderState[folderId].hasGroups[groupId].hasCards[
+                            cardId
+                        ].hasTasks[taskId].desc,
                     }))
             )
         )
@@ -163,7 +166,11 @@ const SearchResult = ({ inputValue, filter }) => {
                                                     >
                                                         T
                                                     </IconButton>
-                                                    {taskData.title}
+                                                    {taskData.title.length > 0
+                                                        ? taskData.title
+                                                        : getFormattedTaskName(
+                                                              taskData.desc
+                                                          )}
                                                 </ResultItem>
                                             )
                                     )

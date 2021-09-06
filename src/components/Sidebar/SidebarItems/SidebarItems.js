@@ -157,7 +157,7 @@ const SidebarItems = () => {
             </SidebarItemsContainer>
         );
     }
-    console.log(notesState)
+    
     return (
         <DragDropContext onDragEnd={handleDragEnd} onDragStart={handleCollapse}>
             <SidebarItemsContainer>

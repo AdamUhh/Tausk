@@ -51,7 +51,7 @@ const SidebarFolder = ({
                     ref={provided.innerRef}
                 >
                     <SidebarFolderWrapper>
-                        <TextContainer padding='5px 3px 5px 3px' minHeight='0'>
+                        <TextContainer padding='5px 3px 5px 3px' minHeight='25px'>
                             <TextWrapper>{title}</TextWrapper>
                         </TextContainer>
                         {/* {/* {folderId !== 'Todo' && ( */}

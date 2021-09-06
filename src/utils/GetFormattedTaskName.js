@@ -1,9 +1,9 @@
 export const getFormattedTaskName = (desc) => {
-
     //Unorderd/Ordered
     if (desc.blocks[0].data.items) {
         return desc.blocks[0].data.items[0]
             .replace(/<[^>]+>/g, '')
+            .replace('&nbsp;', ' ')
             .substring(0, 150);
     }
 
@@ -11,6 +11,7 @@ export const getFormattedTaskName = (desc) => {
     if (!desc.blocks[0].data.text && desc.blocks[0].data.caption) {
         return desc.blocks[0].data.caption
             .replace(/<[^>]+>/g, '')
+            .replace('&nbsp;', ' ')
             .substring(0, 150);
     }
 
@@ -18,6 +19,7 @@ export const getFormattedTaskName = (desc) => {
     if (desc.blocks[0].data.text) {
         return desc.blocks[0].data.text
             .replace(/<[^>]+>/g, '')
+            .replace('&nbsp;', ' ')
             .substring(0, 150);
     }
     //Table
@@ -25,18 +27,21 @@ export const getFormattedTaskName = (desc) => {
         return desc.blocks[0].data.content[0]
             .filter((text) => text.length > 0)[0]
             .replace(/<[^>]+>/g, '')
+            .replace('&nbsp;', ' ')
             .substring(0, 150);
     }
     // Code
     if (desc.blocks[0].data.code) {
         return desc.blocks[0].data.code
             .replace(/<[^>]+>/g, '')
+            .replace('&nbsp;', ' ')
             .substring(0, 150);
     }
     // Simple-Image
     if (desc.blocks[0].data.url) {
         return desc.blocks[0].data.url
             .replace(/<[^>]+>/g, '')
+            .replace('&nbsp;', ' ')
             .substring(0, 150);
     }
 

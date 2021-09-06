@@ -7,6 +7,7 @@ import {
     addFolderHasGroup,
     addGroup,
     addGroupHasCard,
+    addNotesHasFolder,
     addTask,
     deleteCard,
     deleteCardHasTask,
@@ -14,6 +15,7 @@ import {
     deleteFolderHasGroup,
     deleteGroup,
     deleteGroupHasCard,
+    deleteNotesHasFolder,
     deleteTask,
     editTask,
     getDataAndUpdateState,
@@ -29,6 +31,7 @@ import {
     updateDestinationGroupHasCard,
     updateFolderHasGroup,
     updateGroupHasCard,
+    updateNotesHasFolder,
 } from '../../ducks/notesDuck';
 import {
     requestDeleteCard,
@@ -51,6 +54,7 @@ import {
     requestUpdateGroupCardOrder,
     requestUpdateCardTaskOrder,
     requestSettingsData,
+    requestUpdateNotesFolderOrder,
 } from './notesRequester';
 
 //Todo: IMPORTANT - additionally, make a modal pop up that asks if you would like to delete all the
@@ -63,19 +67,19 @@ import {
 export function* handleGetDataPost(action) {
     try {
         const SettingRes = yield call(requestSettingsData, action);
-        console.log('Setting response:')
+        // console.log('Setting response:')
 
         const FolderRes = yield call(requestGetFolderData, action);
-        console.log('Folder response:');
+        // console.log('Folder response:');
 
         const GroupRes = yield call(requestGetGroupData, action);
-        console.log('Group response:');
+        // console.log('Group response:');
 
         const CardRes = yield call(requestGetCardData, action);
-        console.log('Card response:');
+        // console.log('Card response:');
 
         const TaskRes = yield call(requestGetTaskData, action);
-        console.log('Task response:');
+        // console.log('Task response:');
 
         var Notes = {};
         FolderRes.forEach((folderDoc) => {
@@ -113,9 +117,14 @@ export function* handleGetDataPost(action) {
                 });
             });
         });
-        console.log(SettingRes)
 
-        yield put(getDataAndUpdateState(Notes, SettingRes.username));
+        yield put(
+            getDataAndUpdateState(
+                Notes,
+                SettingRes.username,
+                SettingRes.folderOrder
+            )
+        );
     } catch (error) {
         console.log(error);
     }
@@ -130,6 +139,7 @@ export function* handleAddFolderPost(action) {
 
         // stores data inside the redux store using the users reducer
         yield put(addFolder(folderId, title));
+        yield put(addNotesHasFolder(folderId));
 
         yield put(resetView());
     } catch (error) {
@@ -196,9 +206,29 @@ export function* handleDeleteFolderPost(action) {
             folderId: action.folderId,
         });
 
+        yield put(deleteNotesHasFolder(folderId));
         yield put(deleteFolder(folderId));
 
         yield put(resetView());
+    } catch (error) {
+        console.log(error);
+    }
+}
+export function* handleUpdateNotesHasFolderPost(action) {
+    try {
+        const { folderId, sourceIndex, destinationIndex } = action;
+
+        yield put(
+            updateNotesHasFolder(folderId, sourceIndex, destinationIndex)
+        );
+
+        const getSettingState = (state) => state.notesDuck.settings;
+        const settingState = yield select(getSettingState);
+
+        yield call(requestUpdateNotesFolderOrder, {
+            userId: action.userId,
+            folderOrder: settingState.folderOrder,
+        });
     } catch (error) {
         console.log(error);
     }

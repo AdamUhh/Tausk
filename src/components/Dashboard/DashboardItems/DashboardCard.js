@@ -37,14 +37,14 @@ const DashboardCard = ({
     function handleArrowClick(e) {
         e.stopPropagation();
 
-        console.log('clicked arrow');
+        // console.log('clicked arrow');
         setShowTasks((prev) => !prev);
     }
     const history = useHistory();
     function handleCardClick(e) {
         e.stopPropagation();
 
-        console.log('clicked card');
+        // console.log('clicked card');
 
         history.push(`/Notes/${folderId}/${groupId}/${cardId}`);
     }

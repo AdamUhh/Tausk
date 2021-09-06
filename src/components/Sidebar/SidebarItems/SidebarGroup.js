@@ -52,14 +52,14 @@ const SidebarGroup = ({
     }, [groupidurl, groupId]);
 
     function handleGroup() {
-        console.log('clicked Group');
+        // console.log('clicked Group');
 
         history.push(`/Notes/${folderId}/${groupId}`);
     }
 
     function handleArrow(e) {
         e.stopPropagation();
-        console.log('clicked Arrow');
+        // console.log('clicked Arrow');
         setShowChildren((prev) => !prev);
     }
 

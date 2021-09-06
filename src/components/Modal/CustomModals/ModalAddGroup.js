@@ -39,8 +39,8 @@ const ModalAddGroup = () => {
     const [disabled, setDisabled] = useState(false);
     const [toasterState, setToasterState] = useToaster();
 
-    const foldersState = useSelector((state) => state.notesDuck.folders);
-    var firstFolder = Object.keys(foldersState)[0];
+    const notesState = useSelector((state) => state.notesDuck);
+    var firstFolder = notesState.settings.folderOrder[0];
 
     const [selectedOption, setSelectedOption] = useState(firstFolder);
 
@@ -78,7 +78,7 @@ const ModalAddGroup = () => {
 
     function handleSubmit() {
         if (inputValue.length > 0 && inputValue.length <= maxInputLength) {
-            console.log(inputValue);
+            // console.log(inputValue);
             setDisabled(true);
 
             //Dispatch to notesDuck (with NAME)
@@ -127,9 +127,9 @@ const ModalAddGroup = () => {
                             value={selectedOption}
                             onChange={handleSelectOnChange}
                         >
-                            {Object.keys(foldersState).map((folder) => (
+                            {notesState.settings.folderOrder.map((folder) => (
                                 <Option key={folder} value={folder}>
-                                    {foldersState[folder].title}
+                                    {notesState.folders[folder].title}
                                 </Option>
                             ))}
                         </Select>

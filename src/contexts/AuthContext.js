@@ -32,6 +32,7 @@ export const AuthProvider = ({ children }) => {
                 setDoc(doc(db, 'Users', cred.user.uid), {
                     userId: cred.user.uid,
                     username,
+                    folderOrder: []
                 });
             }
         );

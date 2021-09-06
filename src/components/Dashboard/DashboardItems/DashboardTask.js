@@ -14,7 +14,7 @@ const DashboardTask = ({ title, desc, folderId, groupId, cardId, taskId }) => {
     const history = useHistory();
     function handleTaskClick(e) {
         e.stopPropagation();
-        console.log('clicked task');
+        // console.log('clicked task');
 
         history.push(`/Notes/${folderId}/${groupId}/${cardId}/${taskId}`);
     }

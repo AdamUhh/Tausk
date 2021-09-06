@@ -53,13 +53,13 @@ const SidebarCard = ({
     }, [cardidurl, cardId]);
 
     function handleCard() {
-        console.log('clicked Card');
+        // console.log('clicked Card');
         history.push(`/Notes/${folderId}/${groupId}/${cardId}`);
     }
 
     function handleArrow(e) {
         e.stopPropagation();
-        console.log('clicked Arrow');
+        // console.log('clicked Arrow');
         setShowChildren((prev) => !prev);
     }
 

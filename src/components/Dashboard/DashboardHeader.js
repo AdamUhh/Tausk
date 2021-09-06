@@ -65,6 +65,7 @@ const DashboardHeader = () => {
     const folderState = useSelector((state) => state.notesDuck.folders);
     const settingState = useSelector((state) => state.notesDuck.settings) || '';
 
+    //Todo: Fix the width of skeletons on mobile view
     if (folderState['SkeletonFolder']) {
         return (
             <>

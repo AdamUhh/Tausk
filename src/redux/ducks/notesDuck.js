@@ -4,22 +4,22 @@ const initialState = {
     folders: {
         SkeletonFolder: {
             folderId: 'SkeletonFolder',
-            title: '',
+            title: 'SkeletonFolder',
             groupOrder: ['SkeletonGroup'],
             hasGroups: {
                 SkeletonGroup: {
                     groupId: 'SkeletonGroup',
-                    title: '',
+                    title: 'SkeletonGroup',
                     cardOrder: ['SkeletonCard'],
                     hasCards: {
                         SkeletonCard: {
                             cardId: 'SkeletonCard',
-                            title: '',
+                            title: 'SkeletonCard',
                             taskOrder: ['SkeletonTask'],
                             hasTasks: {
                                 SkeletonTask: {
                                     taskId: 'SkeletonTask',
-                                    title: '',
+                                    title: 'SkeletonTask',
                                     desc: '',
                                 },
                             },
@@ -28,6 +28,33 @@ const initialState = {
                 },
             },
         },
+        SSkeletonFolder: {
+            folderId: 'SSkeletonFolder',
+            title: 'SSkeletonFolder',
+            groupOrder: ['SSkeletonGroup'],
+            hasGroups: {
+                SSkeletonGroup: {
+                    groupId: 'SSkeletonGroup',
+                    title: 'SSkeletonGroup',
+                    cardOrder: ['SSkeletonCard'],
+                    hasCards: {
+                        SSkeletonCard: {
+                            cardId: 'SSkeletonCard',
+                            title: 'SSkeletonCard',
+                            taskOrder: ['SSkeletonTask'],
+                            hasTasks: {
+                                SSkeletonTask: {
+                                    taskId: 'SSkeletonTask',
+                                    title: 'SSkeletonTask',
+                                    desc: '',
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+
         // Todo: {
         //     folderId: 'Todo',
         //     title: 'Todo',
@@ -113,6 +140,9 @@ const initialState = {
         //     },
         // },
     },
+    settings: {
+        folderOrder: ['SkeletonFolder', 'SSkeletonFolder'],
+    },
 };
 
 // ? Constants
@@ -160,6 +190,9 @@ export const DELETE_TASK_POST = 'DELETE_TASK_POST';
 export const DELETE_TASK = 'DELETE_TASK';
 
 //* ADD HAS... ARRAY
+export const ADD_NOTES_HASFOLDER_POST = 'ADD_NOTES_HASFOLDER_POST';
+export const ADD_NOTES_HASFOLDER = 'ADD_NOTES_HASFOLDER';
+
 export const ADD_FOLDER_HASGROUP_POST = 'ADD_FOLDER_HASGROUP_POST';
 export const ADD_FOLDER_HASGROUP = 'ADD_FOLDER_HASGROUP';
 
@@ -170,6 +203,9 @@ export const ADD_CARD_HASTASK_POST = 'ADD_CARD_HASTASK_POST';
 export const ADD_CARD_HASTASK = 'ADD_CARD_HASTASK';
 
 //* UPDATE HAS... ARRAY
+export const UPDATE_NOTES_HASFOLDER_POST = 'UPDATE_NOTES_HASFOLDER_POST';
+export const UPDATE_NOTES_HASFOLDER = 'UPDATE_NOTES_HASFOLDER';
+
 export const UPDATE_FOLDER_HASGROUP_POST = 'UPDATE_FOLDER_HASGROUP_POST';
 export const UPDATE_FOLDER_HASGROUP = 'UPDATE_FOLDER_HASGROUP';
 export const UPDATE_DESTINATIONFOLDER_HASGROUP =
@@ -188,6 +224,9 @@ export const UPDATE_DESTINATIONCARD_HASTASK = 'UPDATE_DESTINATIONCARD_HASTASK';
 export const MOVE_CARD_HASTASK_DATA = 'MOVE_CARD_HASTASK_DATA';
 
 //* DELETE HAS... ARRAY
+export const DELETE_NOTES_HASFOLDER_POST = 'DELETE_NOTES_HASFOLDER_POST';
+export const DELETE_NOTES_HASFOLDER = 'DELETE_NOTES_HASFOLDER';
+
 export const DELETE_FOLDER_HASGROUP_POST = 'DELETE_FOLDER_HASGROUP_POST';
 export const DELETE_FOLDER_HASGROUP = 'DELETE_FOLDER_HASGROUP';
 
@@ -203,10 +242,11 @@ export const getDataPost = (userId) => ({
     type: GET_DATA_POST,
     userId,
 });
-export const getDataAndUpdateState = (Notes, username) => ({
+export const getDataAndUpdateState = (Notes, username, folderOrder) => ({
     type: GET_DATA_AND_UPDATE_STATE,
     Notes,
     username,
+    folderOrder,
 });
 //* Add --------------------------------------------------------
 export const addFolderPost = (userId, title) => ({
@@ -281,6 +321,11 @@ export const addTask = (folderId, groupId, cardId, taskId, title, desc) => ({
 
 //* ADD HAS... ARRAY --------------------------------------------------------
 
+export const addNotesHasFolder = (folderId) => ({
+    type: ADD_NOTES_HASFOLDER,
+    folderId,
+});
+
 export const addFolderHasGroup = (folderId, groupId) => ({
     type: ADD_FOLDER_HASGROUP,
     folderId,
@@ -303,6 +348,29 @@ export const addCardHasTask = (folderId, groupId, cardId, taskId) => ({
 });
 
 //* UPDATE HAS...ARRAY --------------------------------------------------------
+export const updateNotesHasFolderPost = (
+    userId,
+    folderId,
+    sourceIndex,
+    destinationIndex
+) => ({
+    type: UPDATE_NOTES_HASFOLDER_POST,
+    userId,
+    folderId,
+    sourceIndex,
+    destinationIndex,
+});
+export const updateNotesHasFolder = (
+    folderId,
+    sourceIndex,
+    destinationIndex
+) => ({
+    type: UPDATE_NOTES_HASFOLDER,
+    folderId,
+    sourceIndex,
+    destinationIndex,
+});
+
 export const updateFolderHasGroupPost = (
     userId,
     sourceFolderId,
@@ -554,6 +622,10 @@ export const deleteTask = (folderId, groupId, cardId, taskId) => ({
     taskId,
 });
 //* DELETE HAS...ARRAY --------------------------------------------------------
+export const deleteNotesHasFolder = (folderId) => ({
+    type: DELETE_NOTES_HASFOLDER,
+    folderId,
+});
 export const deleteFolderHasGroup = (folderId, groupId) => ({
     type: DELETE_FOLDER_HASGROUP,
     folderId,
@@ -653,7 +725,21 @@ const notesDuck = (state = initialState, action) => {
             return {
                 ...state,
                 folders: action.Notes,
-                settings: { username: action.username },
+                settings: {
+                    username: action.username,
+                    folderOrder: action.folderOrder,
+                },
+            };
+        }
+        case ADD_NOTES_HASFOLDER: {
+            const { folderId } = action;
+
+            return {
+                ...state,
+                settings: {
+                    ...state.settings,
+                    folderOrder: [...state.settings.folderOrder, folderId],
+                },
             };
         }
         case ADD_FOLDER: {
@@ -842,7 +928,21 @@ const notesDuck = (state = initialState, action) => {
                 },
             };
         }
+        case DELETE_NOTES_HASFOLDER: {
+            const { folderId } = action;
 
+            return {
+                ...state,
+                settings: {
+                    ...state.settings,
+                    folderOrder: [
+                        ...state.settings.folderOrder.filter(
+                            (folder) => folder !== folderId
+                        ),
+                    ],
+                },
+            };
+        }
         case DELETE_FOLDER: {
             const { folderId } = action;
 
@@ -1107,6 +1207,24 @@ const notesDuck = (state = initialState, action) => {
                             },
                         },
                     },
+                },
+            };
+        }
+
+        case UPDATE_NOTES_HASFOLDER: {
+            const { folderId, sourceIndex, destinationIndex } = action;
+
+            const settingsData = state.settings;
+            const newNotesHasFolderArr = settingsData.folderOrder;
+
+            newNotesHasFolderArr.splice(sourceIndex, 1);
+            newNotesHasFolderArr.splice(destinationIndex, 0, folderId);
+
+            return {
+                ...state,
+                settings: {
+                    ...state.settings,
+                    folderOrder: newNotesHasFolderArr,
                 },
             };
         }

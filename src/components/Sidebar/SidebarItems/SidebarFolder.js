@@ -18,7 +18,7 @@ import ContextSidebarFolder from '../../ContextDropdown/CustomContextDropdowns/C
 
 //* Hooks, React
 import React, { useRef } from 'react'; // remove this
-import { Droppable } from 'react-beautiful-dnd';
+import { Draggable, Droppable } from 'react-beautiful-dnd';
 
 //* SVG
 import HorizontalDots from '../../SVG/HorizontalDots';
@@ -36,59 +36,68 @@ const SidebarFolder = ({
     groupOrder,
     hasGroups,
     folderId,
+    index,
     collapse,
 }) => {
     const countref = useRef(0); // remove this
     console.log('SidebarFolder.js: ' + countref.current++); // remove this
 
-    
-
     return (
-        <SidebarFolderContainer>
-            <SidebarFolderWrapper>
-                <TextContainer padding='5px 3px 5px 3px' minHeight='0'>
-                    <TextWrapper>{title}</TextWrapper>
-                </TextContainer>
-                {/* {/* {folderId !== 'Todo' && ( */}
-                <OptionsContainer>
-                    <ContextDropdown
-                        icon={<HorizontalDots height='20px' />}
-                        width='20px'
-                        height='10px'
-                        transparent
-                    >
-                        <ContextSidebarFolder
-                            folderId={folderId}
-                            title={title}
-                        />
-                    </ContextDropdown>
-                </OptionsContainer>
-                {/* )}  */}
-            </SidebarFolderWrapper>
-            <Droppable droppableId={folderId} type='group'>
-                {(provided, snapshot) => (
-                    <DroppableWrapper
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        isDraggingOver={snapshot.isDraggingOver}
-                    >
-                        {groupOrder?.map((group, index) => (
-                            <SidebarGroup
-                                key={group}
-                                title={hasGroups[group].title}
-                                cardOrder={hasGroups[group].cardOrder}
-                                hasCards={hasGroups[group].hasCards}
-                                folderId={folderId}
-                                groupId={group}
-                                index={index}
-                                collapse={collapse}
-                            />
-                        ))}
-                        {provided.placeholder}
-                    </DroppableWrapper>
-                )}
-            </Droppable>
-        </SidebarFolderContainer>
+        <Draggable draggableId={folderId} index={index}>
+            {(provided) => (
+                <SidebarFolderContainer
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    ref={provided.innerRef}
+                >
+                    <SidebarFolderWrapper>
+                        <TextContainer padding='5px 3px 5px 3px' minHeight='0'>
+                            <TextWrapper>{title}</TextWrapper>
+                        </TextContainer>
+                        {/* {/* {folderId !== 'Todo' && ( */}
+                        {!collapse && (
+                            <OptionsContainer>
+                                <ContextDropdown
+                                    icon={<HorizontalDots height='20px' />}
+                                    width='20px'
+                                    height='10px'
+                                    transparent
+                                >
+                                    <ContextSidebarFolder
+                                        folderId={folderId}
+                                        title={title}
+                                    />
+                                </ContextDropdown>
+                            </OptionsContainer>
+                        )}
+                        {/* )}  */}
+                    </SidebarFolderWrapper>
+                    <Droppable droppableId={folderId} type='group'>
+                        {(provided, snapshot) => (
+                            <DroppableWrapper
+                                ref={provided.innerRef}
+                                {...provided.droppableProps}
+                                isDraggingOver={snapshot.isDraggingOver}
+                            >
+                                {groupOrder?.map((group, index) => (
+                                    <SidebarGroup
+                                        key={group}
+                                        title={hasGroups[group].title}
+                                        cardOrder={hasGroups[group].cardOrder}
+                                        hasCards={hasGroups[group].hasCards}
+                                        folderId={folderId}
+                                        groupId={group}
+                                        index={index}
+                                        collapse={collapse}
+                                    />
+                                ))}
+                                {provided.placeholder}
+                            </DroppableWrapper>
+                        )}
+                    </Droppable>
+                </SidebarFolderContainer>
+            )}
+        </Draggable>
     );
 };
 

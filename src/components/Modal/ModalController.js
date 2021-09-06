@@ -42,10 +42,8 @@ const ModalController = () => {
     const countref = useRef(0); // remove this
     console.log('ModalController.js: ' + countref.current++); // remove this
     const modalState = useSelector((state) => state.modalDuck);
-    console.log(modalState.mode);
-    //Todo: Make the state and firestore have different database strucutres
-    //Todo: Make the state have a more efficient structure using Objects (and Object.keys to map through them)
-    //Todo: Make the state have the same structure that was already written
+    // console.log(modalState.mode);
+
     return (
         <>
             {modalState.mode !== NONE &&

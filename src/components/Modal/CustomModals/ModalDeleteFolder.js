@@ -30,7 +30,6 @@ const ModalDeleteFolder = ({ folderId, title = '' }) => {
         setDisabled(true);
 
         //Dispatch to notesDuck (with ID)
-        console.log(folderId)
         dispatch(deleteFolderPost(currentUser.uid, folderId));
     }
 

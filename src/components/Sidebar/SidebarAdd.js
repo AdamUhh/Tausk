@@ -13,7 +13,7 @@ import { addGroupModal } from '../../redux/ducks/modalDuck';
 
 //* Hooks, React
 import React, { useRef } from 'react'; // remove this
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 //* SVG
 import PlusIcon from '../SVG/PlusIcon';
@@ -27,6 +27,17 @@ const SidebarAdd = () => {
     const dispatch = useDispatch();
     function handleAddGroupModal() {
         dispatch(addGroupModal());
+    }
+
+    const folderState = useSelector((state) => state.notesDuck.folders);
+
+    if (folderState['SkeletonFolder']) {
+        return (
+            <SidebarAddGroupContainer>
+                <div className='skeleton skeleton-addgroup'></div>
+                <div className='skeleton skeleton-addfolder'></div>
+            </SidebarAddGroupContainer>
+        );
     }
 
     return (

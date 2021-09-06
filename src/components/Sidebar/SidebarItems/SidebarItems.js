@@ -1,5 +1,5 @@
 //* Styles
-import { SidebarItemsContainer } from '../SidebarStylings';
+import { DroppableWrapper, SidebarItemsContainer } from '../SidebarStylings';
 
 //* Components
 import SidebarFolder from './SidebarFolder';
@@ -7,11 +7,12 @@ import SidebarFolder from './SidebarFolder';
 //* Hooks, React
 import React, { useRef } from 'react'; // remove this
 import { useDispatch, useSelector } from 'react-redux';
-import { DragDropContext } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import {
     updateCardHasTaskPost,
     updateFolderHasGroupPost,
     updateGroupHasCardPost,
+    updateNotesHasFolderPost,
 } from '../../../redux/ducks/notesDuck';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useState } from 'react';
@@ -21,8 +22,8 @@ const SidebarItems = () => {
     const countref = useRef(0); // remove this
     console.log('SidebarItems.js: ' + countref.current++); // remove this
 
-    const folderState = useSelector((state) => state.notesDuck.folders);
-    console.log(folderState);
+    const notesState = useSelector((state) => state.notesDuck);
+    // console.log(folderState);
 
     const [collapse, setCollapse] = useState(false);
 
@@ -116,20 +117,30 @@ const SidebarItems = () => {
                     `/Notes/${destination.droppableId}/${draggableId}`
                 );
         }
+        if (type === 'folder') {
+            dispatch(
+                updateNotesHasFolderPost(
+                    currentUser.uid,
+                    draggableId,
+                    source.index,
+                    destination.index
+                )
+            );
+        }
     };
 
     function handleCollapse() {
         setCollapse(true);
     }
 
-    if (folderState['SkeletonFolder']) {
+    if (notesState.folders['SkeletonFolder']) {
         return (
             <SidebarItemsContainer>
                 <div className='skeleton skeleton-folder'></div>
                 <div className='skeleton skeleton-group'></div>
                 <div className='skeleton skeleton-card'></div>
                 <div className='skeleton skeleton-task'></div>
-                
+
                 <div className='skeleton skeleton-folder'></div>
                 <div className='skeleton skeleton-group'></div>
                 <div className='skeleton skeleton-card'></div>
@@ -146,20 +157,39 @@ const SidebarItems = () => {
             </SidebarItemsContainer>
         );
     }
-
+    console.log(notesState)
     return (
         <DragDropContext onDragEnd={handleDragEnd} onDragStart={handleCollapse}>
             <SidebarItemsContainer>
-                {Object.keys(folderState)?.map((folder) => (
-                    <SidebarFolder
-                        key={folder}
-                        title={folderState[folder].title}
-                        groupOrder={folderState[folder].groupOrder}
-                        hasGroups={folderState[folder].hasGroups}
-                        folderId={folder}
-                        collapse={collapse}
-                    />
-                ))}
+                <Droppable droppableId={'Notes'} type='folder'>
+                    {(provided, snapshot) => (
+                        <DroppableWrapper
+                            ref={provided.innerRef}
+                            {...provided.droppableProps}
+                            isDraggingOver={snapshot.isDraggingOver}
+                        >
+                            {notesState.settings.folderOrder?.map(
+                                (folder, index) => (
+                                    <SidebarFolder
+                                        key={folder}
+                                        index={index}
+                                        title={notesState.folders[folder].title}
+                                        groupOrder={
+                                            notesState.folders[folder]
+                                                .groupOrder
+                                        }
+                                        hasGroups={
+                                            notesState.folders[folder].hasGroups
+                                        }
+                                        folderId={folder}
+                                        collapse={collapse}
+                                    />
+                                )
+                            )}
+                            {provided.placeholder}
+                        </DroppableWrapper>
+                    )}
+                </Droppable>
             </SidebarItemsContainer>
         </DragDropContext>
     );

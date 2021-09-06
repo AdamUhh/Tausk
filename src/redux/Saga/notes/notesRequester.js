@@ -57,6 +57,10 @@ export const requestGetTaskData = async (action) => {
 export const requestPostFolder = (action) => {
     const { userId, folderId, title } = action;
 
+    updateDoc(doc(db, 'Users', userId), {
+        folderOrder: arrayUnion(folderId),
+    });
+
     setDoc(doc(db, 'Users', userId, 'Folders', folderId), {
         userId: userId,
         uuid: folderId,
@@ -74,9 +78,19 @@ export const requestRenameFolder = (action) => {
 export const requestDeleteFolder = (action) => {
     const { userId, folderId } = action;
 
+    updateDoc(doc(db, 'Users', userId), {
+        folderOrder: arrayRemove(folderId),
+    });
+
     deleteDoc(doc(db, 'Users', userId, 'Folders', folderId));
 };
+export const requestUpdateNotesFolderOrder = (action) => {
+    const { userId, folderOrder } = action;
 
+    updateDoc(doc(db, 'Users', userId), {
+        folderOrder: folderOrder,
+    });
+};
 //* Group --------------------------------------------------------
 export const requestPostGroup = (action) => {
     const { userId, folderId, groupId, title } = action;

@@ -16,6 +16,7 @@ import {
     UPDATE_CARD_HASTASK_POST,
     UPDATE_FOLDER_HASGROUP_POST,
     UPDATE_GROUP_HASCARD_POST,
+    UPDATE_NOTES_HASFOLDER_POST,
 } from '../../redux/ducks/notesDuck';
 import {
     handleAddCardPost,
@@ -34,6 +35,7 @@ import {
     handleUpdateGroupHasCardPost,
     handleUpdateCardHasTaskPost,
     handleGetDataPost,
+    handleUpdateNotesHasFolderPost,
 } from './notes/notesHandler';
 // ? the * after function is a generator function
 // ? This is where we look for any actions that have been dispatched by the redux store
@@ -53,6 +55,7 @@ function* watchAll() {
         takeLatest(RENAME_FOLDER_POST, handleRenameFolderPost),
         takeLatest(RENAME_CARD_POST, handleRenameCardPost),
         takeLatest(EDIT_TASK_POST, handleEditTaskPost),
+        takeLatest(UPDATE_NOTES_HASFOLDER_POST, handleUpdateNotesHasFolderPost),
         takeLatest(UPDATE_FOLDER_HASGROUP_POST, handleUpdateFolderHasGroupPost),
         takeLatest(UPDATE_GROUP_HASCARD_POST, handleUpdateGroupHasCardPost),
         takeLatest(UPDATE_CARD_HASTASK_POST, handleUpdateCardHasTaskPost),

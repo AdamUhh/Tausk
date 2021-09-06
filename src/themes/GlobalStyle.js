@@ -75,7 +75,7 @@ pre {
     background-size: 100px 500px;
     background-position: 0 0;
     animation: shine 2s infinite alternate;	 */
-    animation: skeletonLoading 1.5s linear infinite alternate;
+    animation: skeletonLoading 1.1s linear infinite alternate;
 }
 
 .skeleton-folder{
@@ -97,6 +97,15 @@ pre {
 .skeleton-task {
   height: 1.5rem;
   margin-left: 20%;
+}
+.skeleton-addgroup {
+  width: 100%;
+  height: 2rem;
+}
+.skeleton-addfolder {
+  width: 50%;
+  height: 1rem;
+  margin-left: auto;
 }
 
 .skeleton-notes-nav {
@@ -129,10 +138,18 @@ pre {
   height: 1.75rem;
   width: 40%;
   margin: .125rem 0;
+
+  @media (max-width: 600px){
+    width: 90%;
+  }
 }
 .skeleton-dashboard-header-date {
   height: 1.25rem;
   width: 28%;
+  
+  @media (max-width: 600px){
+    width: 60%;
+  }
 }
 
 

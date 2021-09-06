@@ -142,12 +142,12 @@ const ModalAddTask = ({
     }
 
     const EDITOR_JS_TOOLS = {
-        header: Header,
-        table: Table,
+        header: { class: Header, inlineToolbar: true },
+        table: { class: Table, inlineToolbar: true },
         code: Code,
         image: SimpleImage,
         delimiter: Delimiter,
-        list: List,
+        list: { class: List, inlineToolbar: true },
         underline: Underline,
         quote: { class: Quote, inlineToolbar: true },
         // embed: Embed,

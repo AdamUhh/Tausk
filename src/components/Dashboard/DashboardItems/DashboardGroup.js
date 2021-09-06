@@ -17,8 +17,7 @@ const DashboardGroup = ({ title, cardOrder, hasCards, folderId, groupId }) => {
     const history = useHistory();
 
     function handleGroupClick() {
-        console.log('clicked group');
-        //Redirect via useHistory?
+        // console.log('clicked group');
 
         history.push(`/Notes/${folderId}/${groupId}`);
     }

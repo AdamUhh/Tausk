@@ -41,13 +41,13 @@ const SidebarTask = ({
     const history = useHistory();
     const { taskidurl } = useParams();
     function handleTask() {
-        console.log('clicked Task');
+        // console.log('clicked Task');
         history.push(`/Notes/${folderId}/${groupId}/${cardId}/${taskId}`);
     }
 
     function handleArrow(e) {
         e.stopPropagation();
-        console.log('clicked Arrow');
+        // console.log('clicked Arrow');
     }
 
     return (

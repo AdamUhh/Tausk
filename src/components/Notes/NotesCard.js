@@ -39,7 +39,7 @@ const NotesCard = ({ notesLayout, title, taskOrder, hasTasks, cardId }) => {
     }
 
     const { folderidurl, groupidurl, cardidurl, taskidurl } = useParams();
-    console.log(title);
+    // console.log(title);
     return (
         <NotesCardContainer>
             <NotesCardHeader>
